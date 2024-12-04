@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OrderRequest;
 use App\Repository\PersonRepository;
 use App\Repository\OrderRepository;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {

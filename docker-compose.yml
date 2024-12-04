@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  mariadb:
+    image: mariadb:latest
+    container_name: app-mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin01
+      MYSQL_DATABASE: travelLaravel
+    volumes:
+      - ./database:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - travel_network
+
   php:
     image: php:8.3-fpm
     container_name: php-container
@@ -8,11 +22,17 @@ services:
       - ./src:/var/www/html
     depends_on:
       - composer
+    networks:
+      - travel_network
 
   composer:
     image: composer:2.8.2
     container_name: composer-container
-    command: ["sh", "-c", "cd /var/www/html/travel_laravel && composer install"]
+    volumes:
+      - ./src:/var/www/html
+    command: ["sh", "-c", "cd /var/www/html/travellaravel && composer install"]
+    networks:
+      - travel_network
 
   nginx:
     image: nginx:alpine
@@ -21,8 +41,11 @@ services:
       - ./src:/var/www/html
       - ./nginx:/etc/nginx/conf.d
     ports:
-      - "8080:8080"
       - "8123:8123"
     depends_on:
       - php
+    networks:
+      - travel_network
 
+networks:
+  travel_network:
