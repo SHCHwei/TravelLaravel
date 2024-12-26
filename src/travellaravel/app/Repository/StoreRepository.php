@@ -10,4 +10,13 @@ class StoreRepository extends BaseRepository
     {
         $this->setModel(Store::class);
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function search($id)
+    {
+        return $this->model::find($id)->roomTypes;
+    }
 }

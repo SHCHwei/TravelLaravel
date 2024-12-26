@@ -3,16 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Store;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-class Store extends Model
+class RoomType extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'store';
+    protected $table = 'room_type';
 
     /**
      * The primary key associated with the table.
@@ -28,19 +30,11 @@ class Store extends Model
      */
     protected $fillable = [
         'name',
-        'address',
-        'personInCharge',
-        'email',
         'description',
-        'password'
+        'price',
+        'count',
+        'sid'
     ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [];
 
     /**
      * Indicates if the model's ID is auto-incrementing.
@@ -56,12 +50,19 @@ class Store extends Model
      */
     public $timestamps = true;
 
-
     /**
-     * Get the store for the room type.
+     * Get the store that owns the room type.
      */
-    public function roomTypes(): HasMany
+    public function hotelStore(): BelongsTo
     {
-        return $this->hasMany(RoomType::class, 'sid', 'id');
+        return $this->belongsTo(Store::class, 'sid', 'id');
     }
+
+//    /**
+//     * Get room type for the order.
+//     */
+//    public function tags(): MorphToMany
+//    {
+//        return $this->morphToMany(Order::class, 'sid');
+//    }
 }

@@ -70,6 +70,15 @@ class StoreController extends Controller
     }
 
     /**
+     * @return JsonResponse
+     */
+    public function roomList(): JsonResponse
+    {
+        $data = $this->repository->search(session('sid'));
+        return response()->json($data, 200);
+    }
+
+    /**
      * @param StoreRequest $request
      * @return JsonResponse
      */
