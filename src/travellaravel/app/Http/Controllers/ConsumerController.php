@@ -100,7 +100,9 @@ class ConsumerController extends Controller
 
         if(count($result) === 1){
 
-            if(Hash::check($params['password'], $result[0]->password)){
+            if(Hash::check($params['password'], $result[0]->password))
+            {
+                $request->session()->flush();
                 $request->session()->put('cid', $result[0]->id);
                 return response()->json($request->session()->all(), 200);
             }else{
