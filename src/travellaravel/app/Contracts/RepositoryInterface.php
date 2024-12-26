@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 interface RepositoryInterface
 {
+
     /**
      * @param array $data
      */
@@ -20,4 +21,5 @@ interface RepositoryInterface
      * @return array
      */
     public function get(array $list): array;
+
 }
