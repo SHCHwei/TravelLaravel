@@ -97,7 +97,6 @@ class ConsumerRequest extends FormRequest
         ];
     }
 
-
     public function logout(): array
     {
         return [];

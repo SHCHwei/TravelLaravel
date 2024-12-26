@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Cookie;
 
 class ConsumerController extends Controller
 {
-    protected CustomRepository $consumerRepository;
+    protected CustomRepository $repository;
 
-    public function __construct(CustomRepository $repository)
+    public function __construct(CustomRepository $customRepository)
     {
-        $this->consumerRepository = $repository;
+        $this->repository = $customRepository;
     }
 
     /**
@@ -26,7 +26,7 @@ class ConsumerController extends Controller
     {
         $params = $request->only(['name', 'gender', 'birthday', 'email', 'password']);
         $params['password'] = Hash::make($params['password']);
-        $result = $this->consumerRepository->create($params);
+        $result = $this->repository->create($params);
 
         return response()->json($result, 200);
     }
@@ -38,7 +38,7 @@ class ConsumerController extends Controller
     public function update(ConsumerRequest $request) : JsonResponse
     {
 
-        $result = $this->consumerRepository->update($request->get('id'), $request->only(['name', 'gender', 'birthday']));
+        $result = $this->repository->update($request->get('id'), $request->only(['name', 'gender', 'birthday']));
 
         if($result){
             return response()->json(['error' => "null"], 200);
@@ -54,7 +54,7 @@ class ConsumerController extends Controller
     public function overview(ConsumerRequest $request) : JsonResponse
     {
 
-        $result = $this->consumerRepository->query(['id', 'name', 'gender', 'birthday', 'created_at', 'updated_at'], ['id' => $request->get('id')]);
+        $result = $this->repository->query(['id', 'name', 'gender', 'birthday', 'created_at', 'updated_at'], ['id' => $request->get('id')]);
 
         if($result){
             return response()->json(['error' => null, 'data' => $result], 200);
@@ -63,15 +63,19 @@ class ConsumerController extends Controller
         }
     }
 
-    public function changePassword(ConsumerRequest $request)
+    /**
+     * @param ConsumerRequest $request
+     * @return JsonResponse
+     */
+    public function changePassword(ConsumerRequest $request): JsonResponse
     {
 
         $cid = $request->only(['id']);
-        $data = $this->consumerRepository->one($cid);
+        $data = $this->repository->one($cid);
 
         if(Hash::check($request->get('oldPassword'), $data->password))
         {
-            $result = $this->consumerRepository->update($cid, ['password' => Hash::make($request->get('newPassword'))]);
+            $result = $this->repository->update($cid, ['password' => Hash::make($request->get('newPassword'))]);
 
             if($result){
                 return response()->json(['error' => "null"], 200);
@@ -88,11 +92,11 @@ class ConsumerController extends Controller
      * @param ConsumerRequest $request
      * @return JsonResponse
      */
-    public function login(ConsumerRequest $request)
+    public function login(ConsumerRequest $request): JsonResponse
     {
         $params = $request->only(['email', 'password']);
 
-        $result = $this->consumerRepository->query(["id", "email", "password"], ['email' => $params['email']]);
+        $result = $this->repository->query(["id", "email", "password"], ['email' => $params['email']]);
 
         if(count($result) === 1){
 
@@ -113,7 +117,7 @@ class ConsumerController extends Controller
      * @param ConsumerRequest $request
      * @return JsonResponse
      */
-    public function logout(ConsumerRequest $request)
+    public function logout(ConsumerRequest $request): JsonResponse
     {
         $request->session()->flush();
         Cookie::forget('laravel_session');
