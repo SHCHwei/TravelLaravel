@@ -52,8 +52,6 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function create($condition)
     {
-        $result = [];
-
         try{
             $result = $this->model::query()->create($condition);
         }catch (\Exception $e){

@@ -36,7 +36,7 @@ class StoreController extends Controller
      */
     public function update(StoreRequest $request): JsonResponse
     {
-        $result = $this->repository->update($request->get('id'), $request->only(['name', 'address', 'personInCharge', 'description']));
+        $result = $this->repository->update(session('sid'), $request->only(['name', 'address', 'personInCharge', 'description']));
 
         if($result){
             return response()->json(['error' => "null"], 200);
@@ -51,7 +51,7 @@ class StoreController extends Controller
      */
     public function changePassword(StoreRequest $request): JsonResponse
     {
-        $sid = $request->only(['id']);
+        $sid = session('sid');
         $data = $this->repository->one($sid);
 
         if(Hash::check($request->get('oldPassword'), $data->password))

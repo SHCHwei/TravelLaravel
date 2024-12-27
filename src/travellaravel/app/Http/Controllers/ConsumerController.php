@@ -38,7 +38,7 @@ class ConsumerController extends Controller
     public function update(ConsumerRequest $request) : JsonResponse
     {
 
-        $result = $this->repository->update($request->get('id'), $request->only(['name', 'gender', 'birthday']));
+        $result = $this->repository->update(session('cid'), $request->only(['name', 'gender', 'birthday']));
 
         if($result){
             return response()->json(['error' => "null"], 200);
@@ -54,7 +54,7 @@ class ConsumerController extends Controller
     public function overview(ConsumerRequest $request) : JsonResponse
     {
 
-        $result = $this->repository->query(['id', 'name', 'gender', 'birthday', 'created_at', 'updated_at'], ['id' => $request->get('id')]);
+        $result = $this->repository->query(['id', 'name', 'gender', 'birthday', 'created_at', 'updated_at'], ['id' => session('cid')]);
 
         if($result){
             return response()->json(['error' => null, 'data' => $result], 200);
@@ -70,7 +70,7 @@ class ConsumerController extends Controller
     public function changePassword(ConsumerRequest $request): JsonResponse
     {
 
-        $cid = $request->only(['id']);
+        $cid = session('cid');
         $data = $this->repository->one($cid);
 
         if(Hash::check($request->get('oldPassword'), $data->password))
