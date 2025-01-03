@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: admin01
-      MYSQL_DATABASE: travelLaravel
+      MYSQL_DATABASE: travel
     volumes:
       - ./database:/var/lib/mysql
     ports:
