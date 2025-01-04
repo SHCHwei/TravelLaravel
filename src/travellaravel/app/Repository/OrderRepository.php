@@ -2,45 +2,86 @@
 
 namespace App\Repository;
 
+use App\Models\Order;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
+
 class OrderRepository extends BaseRepository
 {
-    public $id;
-    public $price;
 
-    public $name;
-    public $address;
-    public $currency;
-
-    private $rate = 31;
-
-    public function get($list = ['id', 'name', 'price', 'address', 'currency']): array
+    public function __construct()
     {
-        $returnData = array();
-
-        foreach ($list as $key)
-        {
-            if(isset($this->$key)){
-                $returnData[$key] = $this->$key;
-            }
-        }
-
-        return $returnData;
+        $this->setModel(Order::class);
     }
 
-    public function exchangeRate()
+    /**
+     * @param $condition
+     * @return Collection
+     */
+    public function getOrderByCId($condition): Collection
     {
-        if($this->currency == 'USD'){
-            $data = ['price' => $this->price * $this->rate, 'currency' => "TWD"];
-            $this->set($data);
+
+        $data = $this->model::query()
+            ->where('cid', $condition['cid'])
+            ->where('status', $condition['status'])
+            ->whereBetween('updated_at', [$condition['startDate'], $condition['endDate']])
+            ->get();
+
+        foreach ($data as $order) {
+            $order->orderCustomer;
         }
+
+        return $data;
     }
 
-    public function moneyCheck()
+    /**
+     * @param $condition
+     * @return int
+     */
+    public function checkRoomWithOrder($condition): int
     {
-        if ((int) $this->price <= 2000) {
-            return false;
+        return $this->model::query()
+            ->where('rid', $condition['rid'])
+            ->whereIn('status', ['0','1'])
+            ->whereBetween('checkin', [$condition['startDate'], $condition['endDate']])
+            ->whereBetween('checkout', [$condition['startDate'], $condition['endDate']])
+            ->count('id');
+    }
+
+    /**
+     * @param array $ids
+     * @param array $condition
+     * @return Collection
+     */
+    public function getOrderByRId(array $ids, array $condition): Collection
+    {
+
+        $data = $this->model::query()
+            ->whereIn('rid', $ids)
+            ->where('status', $condition['status'])
+            ->whereBetween('updated_at', [$condition['startDate'], $condition['endDate']])
+            ->get();
+
+        foreach ($data as $order) {
+            $order->orderCustomer;
+            $order->orderRoom;
         }
 
-        return true;
+        return $data;
+    }
+
+    /**
+     * @param $id
+     * @param $condition
+     * @return bool|int
+     */
+    public function update($id, $condition): bool|int
+    {
+        $lock = Cache::lock('update_order', 60);
+
+        $result = $this->model::query()->where('id', $id)->update($condition);
+
+        $lock->release();
+        return $result;
     }
 }

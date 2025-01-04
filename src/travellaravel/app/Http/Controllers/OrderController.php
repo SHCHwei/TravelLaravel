@@ -2,30 +2,102 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Http\Requests\OrderRequest;
-use App\Repository\PersonRepository;
-use App\Repository\OrderRepository;
-use Illuminate\Support\Facades\DB;
+use App\Service\OrderService;
+use Illuminate\Http\JsonResponse;
 
 class OrderController extends Controller
 {
-    public function orders(OrderRequest $request, PersonRepository $personRepository, OrderRepository $orderRepository)
+    private $orderService;
+
+    public function __construct(OrderService $orderService)
     {
-        $data = $request->all();
+        $this->orderService = $orderService;
+    }
 
-        if( $personRepository->nameFormater($data['name']) ){
-            return response()->json(["status" => false, "error" => "name is error"], 400);
+    /**
+     * @param OrderRequest $request
+     * @return JsonResponse
+     */
+    public function ordersByConsumer(OrderRequest $request): JsonResponse
+    {
+        $params = $request->only(['startDate', 'endDate', 'status']);
+        $params['cid'] = session('cid');
+        $result = $this->orderService->getOrders($params);
+
+        return response()->json($result, 200);
+    }
+
+    /**
+     * @param OrderRequest $request
+     * @return JsonResponse
+     */
+    public function create(OrderRequest $request): JsonResponse
+    {
+        $params = $request->only(['rid', 'checkin', 'checkout', 'money', 'payType']);
+        $params['cid'] = session('cid');
+        $result = $this->orderService->newOrder($params);
+
+        if($result['status']){
+            return response()->json($result, 200);
+        }else{
+            return response()->json($result, 400);
         }
+    }
 
-        $orderRepository->set($data);
+    /**
+     * @param OrderRequest $request
+     * @return JsonResponse
+     */
+    public function detail(OrderRequest $request): JsonResponse
+    {
+        $result = $this->orderService->getOrderById($request->get('id'));
 
-        $orderRepository->exchangeRate();
+        return response()->json($result, 200);
+    }
 
+    /**
+     * @param OrderRequest $request
+     * @return JsonResponse
+     */
+    public function payment(OrderRequest $request): JsonResponse
+    {
+        $params = $request->only(['id', 'payType', 'payed']);
+        $result = $this->orderService->payment($params);
 
-        if( $orderRepository->moneyCheck() ){
-            return response()->json(["status" => false, "error" => "Price is over 2000"], 400);
-        }
+        return response()->json($result, 200);
+    }
 
-        return response()->json($orderRepository->get(), 200);
+    /**
+     * @param OrderRequest $request
+     * @return JsonResponse
+     */
+    public function cancelOrder(OrderRequest $request): JsonResponse
+    {
+        $result = $this->orderService->cancel($request->get('id'));
+
+        return response()->json($result, 200);
+    }
+
+    /**
+     * @param OrderRequest $request
+     * @return JsonResponse
+     */
+    public function ordersByStore(OrderRequest $request): JsonResponse
+    {
+        $params = $request->only(['startDate', 'endDate', 'status']);
+        $data = $this->orderService->ordersByStore($params);
+        return response()->json($data, 200);
+    }
+
+    /**
+     * @param OrderRequest $request
+     * @return JsonResponse
+     */
+    public function updateOrder(OrderRequest $request): JsonResponse
+    {
+        $result = $this->orderService->operationByStore($request->get('id'), $request->except(['id']));
+        return response()->json($result, 200);
     }
 }

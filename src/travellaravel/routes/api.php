@@ -14,9 +14,11 @@ Route::prefix('consumer')->middleware([CheckConsumerLogin::class])->group(functi
     Route::post('/changePWD', [ConsumerController::class, 'changePassword']);       //旅客變更密碼
     Route::post('/overview', [ConsumerController::class, 'overview']);              //旅客資料
 
-    Route::post('/order', [ConsumerController::class, 'update']);
-    Route::post('/pay', [ConsumerController::class, 'update']);
-    Route::post('/orderCancel', [ConsumerController::class, 'update']);
+    Route::post('/orders', [OrderController::class, 'ordersByConsumer']);           //旅客訂房列表
+    Route::post('/newOrder', [OrderController::class, 'create']);                   //建立訂房訂單
+    Route::post('/order', [OrderController::class, 'detail']);                      //查詢訂房紀錄內容
+    Route::post('/payment', [OrderController::class, 'payment']);
+    Route::post('/cancelOrder', [OrderController::class, 'cancelOrder']);
 });
 
 
@@ -28,8 +30,9 @@ Route::prefix('store')->middleware([CheckStoreLogin::class])->group(function () 
     Route::post('/new_room', [RoomTypeController::class, 'create']);                //新增房型
     Route::post('/update_room', [RoomTypeController::class, 'update']);             //編輯房型
 
-    Route::post('/order_view', [RoomTypeController::class, 'update']);
-    Route::post('/order_status', [RoomTypeController::class, 'update']);
+    Route::post('/orders', [OrderController::class, 'ordersByStore']);              //商家訂房列表
+    Route::post('/order', [OrderController::class, 'detail']);                      //商家查詢訂單內容
+    Route::post('/changeOrder', [OrderController::class, 'updateOrder']);           //商家變更訂單內容
 
 });
 

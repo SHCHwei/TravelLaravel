@@ -2,40 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\FormRequestBase;
 use Illuminate\Validation\Rule;
 
-class OrderRequest extends FormRequest
+class OrderRequest extends FormRequestBase
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
-        return [
-            'id' => 'required',
-            'name' => 'required',
-            'address.*' => 'required',
-            'address.city' => 'required',
-            'address.district' => 'required',
-            'address.street' => 'required',
-            'price' => 'required|string',
-            'currency' => ['required', Rule::in(['TWD', 'USD']),]
-        ];
-    }
-
     /**
      * Get the error messages for the defined validation rules.
      *
@@ -45,18 +16,87 @@ class OrderRequest extends FormRequest
     {
         return [
             'id.required' => 'ID is required',
-            'name.required' => 'name is required',
-            'address.required' => 'address is required',
-            'price.required' => 'price is required',
-            'currency.required' => 'currency is required',
-            'currency.in' => '只限定TWD，USD兩種',
+            'startDate.required' => 'startDate is required',
+            'endDate.required' => 'endDate is required',
+            'rid.required' => 'rid is required',
+            'cid.required' => 'cid is required',
+            'checkin.required' => 'checkin is required',
+            'checkout.required' => 'checkout is required',
+            'money.required' => 'money is required',
+            'payType.required' => 'payType is required',
+            'payed.required' => 'payed is required',
+            'status.required' => 'status is required'
         ];
     }
 
 
-    protected function failedValidation(Validator $validator)
+    public function consumer_orders()
     {
-        $message = $validator->errors();
-        throw new HttpResponseException(response()->json(['status' => false, 'error' => $message->first()], 400));
+        return [
+            'startDate' => 'required|date_format:U',
+            'endDate' => 'required|date_format:U',
+            'status' => ['required', Rule::in(['0', '1', '2', '3'])]
+        ];
+    }
+
+    public function consumer_newOrder()
+    {
+        return [
+            'rid' => 'required',
+            'cid' => 'required',
+            'checkin' => 'required|date_format:U',
+            'checkout' => 'required|date_format:U',
+            'money' => 'required|numeric',
+            'payType' => ['required', Rule::in(['1', '2', '3'])]
+        ];
+    }
+
+    public function consumer_order()
+    {
+        return [
+            'id' => 'required',
+        ];
+    }
+
+    public function consumer_payment()
+    {
+        return [
+            'id' => 'required',
+            'payed' => ['required', Rule::in(['0', '1', '2'])],
+            'payType' => ['required', Rule::in(['1', '2', '3'])]
+        ];
+    }
+
+    public function consumer_cancelOrder()
+    {
+        return [
+            'id' => 'required'
+        ];
+    }
+
+    public function store_ordersByStore()
+    {
+        return [
+            'startDate' => 'required|date_format:U',
+            'endDate' => 'required|date_format:U',
+            'status' => ['required', Rule::in(['0', '1', '2', '3'])]
+        ];
+    }
+
+    public function store_order()
+    {
+        return [
+            'id' => 'required',
+        ];
+    }
+
+    public function store_changeOrder()
+    {
+        return [
+            'id' => 'required',
+            'payed' => ['required', Rule::in(['0', '1', '2'])],
+            'payType' => ['required', Rule::in(['1', '2', '3'])],
+            'status' => ['required', Rule::in(['0', '1', '2', '3'])]
+        ];
     }
 }

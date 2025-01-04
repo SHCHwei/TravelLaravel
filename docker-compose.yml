@@ -3,7 +3,7 @@ version: '3.8'
 services:
   mariadb:
     image: mariadb:latest
-    container_name: app-mariadb
+    container_name: mariadb-T
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: admin01
@@ -17,7 +17,7 @@ services:
 
   php:
     image: php:8.3-fpm
-    container_name: php-container
+    container_name: php-T
     volumes:
       - ./src:/var/www/html
     depends_on:
@@ -27,16 +27,16 @@ services:
 
   composer:
     image: composer:2.8.2
-    container_name: composer-container
+    container_name: composer-T
     volumes:
       - ./src:/var/www/html
-    command: ["sh", "-c", "cd /var/www/html/travellaravel && composer install"]
+    #command: ["sh", "-c", "cd /var/www/html/travel && composer install"]
     networks:
       - travel_network
 
   nginx:
     image: nginx:alpine
-    container_name: nginx-container
+    container_name: nginx-T
     volumes:
       - ./src:/var/www/html
       - ./nginx:/etc/nginx/conf.d

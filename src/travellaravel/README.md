@@ -1,3 +1,0 @@
-將訂單和使用者分別規範可能有的行為，放入 App\Repository的OrderRepository & PersonRepository
-再OrderController 中利用 Facades 於order function 中使用
-把controller中的商業邏輯抽出，在Repository拆分進行其職
