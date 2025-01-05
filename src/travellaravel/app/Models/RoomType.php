@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\RoomTypeFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Store;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class RoomType extends Model
 {
+    /** @use HasFactory<RoomTypeFactory> */
+    use HasFactory;
     /**
      * The table associated with the model.
      *

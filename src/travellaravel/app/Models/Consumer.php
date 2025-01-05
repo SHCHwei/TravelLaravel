@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\ConsumerFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
 
 class Consumer extends Model
 {
+    /** @use HasFactory<ConsumerFactory> */
+    use HasFactory;
+
     /**
      * The table associated with the model.
      *

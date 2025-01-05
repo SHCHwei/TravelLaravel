@@ -2,18 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Models\Consumer;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class ConsumerSeeder extends Seeder
 {
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        $this->call([
-            ConsumerSeeder::class,
-            StoreSeeder::class,
-        ]);
+        Consumer::factory()->count(10)->create();
     }
 }
