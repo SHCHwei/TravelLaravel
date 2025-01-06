@@ -55,7 +55,7 @@ abstract class BaseRepository implements RepositoryInterface
         try{
             $result = $this->model::query()->create($condition);
         }catch (\Exception $e){
-            return ['status' => false, 'message' => "Database error"];
+            return ['status' => false, 'message' => "Database error", "system" => $e->getMessage()];
         }
 
         return ['status' => true, 'data' => $result];

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('cid')->comment("consumer_id");
             $table->timestamp('checkin')->comment("入住日期");
             $table->timestamp('checkout')->comment("退房日期");
-            $table->string('money')->comment("付款金額");
+            $table->integer('money')->comment("付款金額");
             $table->enum('payed', ['0', '1'])->comment("付款狀態");
             $table->enum('payType', ['1', '2', '3'])->comment("付款方式");
             $table->enum('status', ['0', '1', '2', '3'])->comment("訂單狀態");

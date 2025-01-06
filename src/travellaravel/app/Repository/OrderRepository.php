@@ -24,11 +24,11 @@ class OrderRepository extends BaseRepository
         $data = $this->model::query()
             ->where('cid', $condition['cid'])
             ->where('status', $condition['status'])
-            ->whereBetween('updated_at', [$condition['startDate'], $condition['endDate']])
+//            ->whereBetween('updated_at', [$condition['startDate'], $condition['endDate']])
             ->get();
 
         foreach ($data as $order) {
-            $order->orderCustomer;
+            $order->orderConsumer;
         }
 
         return $data;
@@ -43,8 +43,8 @@ class OrderRepository extends BaseRepository
         return $this->model::query()
             ->where('rid', $condition['rid'])
             ->whereIn('status', ['0','1'])
-            ->whereBetween('checkin', [$condition['startDate'], $condition['endDate']])
-            ->whereBetween('checkout', [$condition['startDate'], $condition['endDate']])
+            ->whereBetween('checkin', [$condition['checkin'], $condition['checkout']])
+            ->whereBetween('checkout', [$condition['checkin'], $condition['checkout']])
             ->count('id');
     }
 
@@ -63,7 +63,7 @@ class OrderRepository extends BaseRepository
             ->get();
 
         foreach ($data as $order) {
-            $order->orderCustomer;
+            $order->orderConsumer;
             $order->orderRoom;
         }
 

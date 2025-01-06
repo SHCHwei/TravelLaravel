@@ -33,7 +33,7 @@ class OrderService
             $order->payed = payed($order->payed);
             $order->payType = payType($order->payType);
             $order->status = orderStatus($order->status);
-            $order->room = $order->orderCustomer->name;
+            $order->room = $order->orderConsumer->name;
         }
 
         return $data->toArray();
@@ -51,14 +51,13 @@ class OrderService
         // 計算目前的房間數量 避免超賣
 
         // 1. 房間數量
-        $roomLimit = $this->roomTypeRepository->query(['count'], ['id' => $condition['rid']]);
-
+        $roomLimit = $this->roomTypeRepository->query(['count'], ['id' => $condition['rid']])->first();
 
         // 2. 目前訂單數
         $check = $this->repository->checkRoomWithOrder($condition);
 
         // 如果有剩餘房間，則建立訂單。如果否 return message
-        if($roomLimit == $check)
+        if($roomLimit['count'] == $check)
         {
             $lock->release();
             return ['status' => false, 'message' => '訂房已滿'];
@@ -67,6 +66,7 @@ class OrderService
 
         $condition['payed'] = '0';
         $condition['status'] = '0';
+
         $result = $this->repository->create($condition);
 
         //解鎖
@@ -81,8 +81,8 @@ class OrderService
     public function getOrderById($id): array
     {
         $data = $this->repository->one($id);
-
-        $data->orderCustomer;
+        $data->orderRoom;
+        $data->orderConsumer;
         $data->payed = payed($data->payed);
         $data->payType = payType($data->payType);
         $data->status = orderStatus($data->status);

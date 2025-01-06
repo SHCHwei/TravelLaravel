@@ -28,7 +28,16 @@ class Order extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['*'];
+    protected $fillable = [
+        'rid',
+        'cid',
+        'checkin',
+        'checkout',
+        'money',
+        'payed',
+        'payType',
+        'status'
+    ];
 
     /**
      * Indicates if the model's ID is auto-incrementing.
@@ -47,9 +56,9 @@ class Order extends Model
     /**
      * @return BelongsTo
      */
-    public function orderCustomer(): BelongsTo
+    public function orderConsumer(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Customer', 'cid', 'id');
+        return $this->belongsTo('App\Models\Consumer', 'cid', 'id');
     }
 
 

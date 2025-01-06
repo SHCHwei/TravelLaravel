@@ -104,7 +104,7 @@ class ConsumerController extends Controller
             {
                 $request->session()->flush();
                 $request->session()->put('cid', $result[0]->id);
-                return response()->json($request->session()->all(), 200);
+                return response()->json($request->session()->has('cid'), 200);
             }else{
                 $request->session()->forget('cid');
                 return response()->json(['error' => "password failed"], 400);
@@ -122,7 +122,7 @@ class ConsumerController extends Controller
     public function logout(ConsumerRequest $request): JsonResponse
     {
         $request->session()->flush();
-        Cookie::forget('laravel_session');
+        Cookie::forget('travel_session');
         return response()->json(['error' => null], 200);
     }
 }
