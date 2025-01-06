@@ -2,39 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreRequest extends FormRequest
+class StoreRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @return array
-     */
-    public function rules(): array
-    {
-
-        $paths = explode('/', $this->path());
-
-        unset($paths[0]);
-
-        if(count($paths) > 1)
-        {
-            $ruleName = implode("_",$paths);
-            return $this->{$ruleName}();
-        }else{
-            return $this->{$paths[1]}();
-        }
-    }
-
     /**
      * @return string[]
      */
@@ -49,12 +19,6 @@ class StoreRequest extends FormRequest
             'password.required' => 'password is required',
             'email.email' => 'email format is error',
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        $message = $validator->errors();
-        throw new HttpResponseException(response()->json(['status' => false, 'error' => $message->first()], 400));
     }
 
     public function store_register(): array

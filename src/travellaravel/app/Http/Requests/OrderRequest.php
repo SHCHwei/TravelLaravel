@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\FormRequestBase;
+
 use Illuminate\Validation\Rule;
 
-class OrderRequest extends FormRequestBase
+class OrderRequest extends BaseFormRequest
 {
     /**
      * Get the error messages for the defined validation rules.
@@ -44,8 +44,8 @@ class OrderRequest extends FormRequestBase
         return [
             'rid' => 'required',
             'cid' => 'required',
-            'checkin' => 'required|date_format:U',
-            'checkout' => 'required|date_format:U',
+            'checkin' => 'required|date_format:Y-m-d H:i:s',
+            'checkout' => 'required|date_format:Y-m-d H:i:s',
             'money' => 'required|numeric',
             'payType' => ['required', Rule::in(['1', '2', '3'])]
         ];
