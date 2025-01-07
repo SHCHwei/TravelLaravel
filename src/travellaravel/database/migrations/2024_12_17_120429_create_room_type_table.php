@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->comment("房型介紹");
             $table->integer('price')->comment("房型價錢");
             $table->integer('count')->comment("房型數量");
-            $table->string('sid')->comment("store_id");
+            $table->string('sid')->index()->comment("store_id");
             $table->timestamps();
         });
     }

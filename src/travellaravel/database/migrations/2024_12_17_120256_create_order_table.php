@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('order', function (Blueprint $table) {
             $table->id();
-            $table->integer('rid')->comment("room_id");
-            $table->integer('cid')->comment("consumer_id");
+            $table->integer('rid')->index()->comment("room_id");
+            $table->integer('cid')->index()->comment("consumer_id");
             $table->timestamp('checkin')->comment("入住日期");
             $table->timestamp('checkout')->comment("退房日期");
             $table->integer('money')->comment("付款金額");
