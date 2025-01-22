@@ -1,51 +1,47 @@
 version: '3.8'
 
 services:
+
   mariadb:
     image: mariadb:latest
     container_name: mariadb-T
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: admin01
-      MYSQL_DATABASE: travel
-    volumes:
-      - ./database:/var/lib/mysql
+      MYSQL_DATABASE: travelLaravel
     ports:
       - "3306:3306"
     networks:
-      - travel_network
+      - dev_network
 
   php:
-    image: php:8.3-fpm
+    build:
+      context: ./php
+      dockerfile: Dockerfile
     container_name: php-T
     volumes:
-      - ./src:/var/www/html
+      - ./src/travellaravel/:/var/www/travellaravel
+    working_dir: /var/www/pharmacy
+    expose:
+      - 9000
     depends_on:
-      - composer
+      - mariadb
     networks:
-      - travel_network
-
-  composer:
-    image: composer:2.8.2
-    container_name: composer-T
-    volumes:
-      - ./src:/var/www/html
-    #command: ["sh", "-c", "cd /var/www/html/travel && composer install"]
-    networks:
-      - travel_network
+      - dev_network
 
   nginx:
     image: nginx:alpine
     container_name: nginx-T
     volumes:
-      - ./src:/var/www/html
+      - ./travellaravel/:/var/www/travellaravel
       - ./nginx:/etc/nginx/conf.d
     ports:
-      - "8123:8123"
+      - "1234:1234"
+      - "8080:8080"
     depends_on:
       - php
     networks:
-      - travel_network
+      - dev_network
 
 networks:
-  travel_network:
+  dev_network:
