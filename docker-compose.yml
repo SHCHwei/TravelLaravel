@@ -8,7 +8,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: admin01
-      MYSQL_DATABASE: travelLaravel
+      MYSQL_DATABASE: travel
+    volumes:
+      - ./database/:/var/lib/mysql
     ports:
       - "3306:3306"
     networks:
@@ -18,6 +20,7 @@ services:
     build:
       context: ./php
       dockerfile: Dockerfile
+    image: laravel_php
     container_name: php-T
     volumes:
       - ./src/travellaravel/:/var/www/travellaravel
@@ -33,11 +36,10 @@ services:
     image: nginx:alpine
     container_name: nginx-T
     volumes:
-      - ./travellaravel/:/var/www/travellaravel
+      - ./src/travellaravel/:/var/www/travellaravel
       - ./nginx:/etc/nginx/conf.d
     ports:
       - "1234:1234"
-      - "8080:8080"
     depends_on:
       - php
     networks:
