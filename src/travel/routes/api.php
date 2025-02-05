@@ -36,7 +36,7 @@ Route::prefix('store')->middleware([CheckStoreLogin::class])->group(function () 
 
 });
 
-Route::post('/rooms', [RoomTypeController::class, 'index']);            //房型瀏覽
+Route::get('/rooms', [RoomTypeController::class, 'index']);            //房型瀏覽
 
 Route::post('/register', [ConsumerController::class, 'register']);      //旅客註冊
 Route::post('/store/register', [StoreController::class, 'register']);   //商家註冊

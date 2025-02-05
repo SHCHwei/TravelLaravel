@@ -23,7 +23,7 @@ services:
     image: laravel_php
     container_name: php-T
     volumes:
-      - ./src/travellaravel/:/var/www/travellaravel
+      - ./src/travel/:/var/www/travel
     working_dir: /var/www/pharmacy
     expose:
       - 9000
@@ -36,7 +36,7 @@ services:
     image: nginx:alpine
     container_name: nginx-T
     volumes:
-      - ./src/travellaravel/:/var/www/travellaravel
+      - ./src/travel/:/var/www/travel
       - ./nginx:/etc/nginx/conf.d
     ports:
       - "1234:1234"
